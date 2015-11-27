@@ -114,6 +114,6 @@
     "test-browser": "zuul -- test/basic.js",
     "test-browser-local": "zuul --local -- test/basic.js",
     "test-node": "tape test/*.js",
-    "test-node-resume": "tape test/pause-resume-tracker-torrent.js"
+    "test-node-resume": "tape test/resume-torrent-scenarios.js"
   }
 }

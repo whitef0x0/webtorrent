@@ -144,7 +144,7 @@ if (command === 'help' || argv.help) {
   runDownload(/* torrentId */ argv._[1])
 } else if (command === 'seed') {
   runSeed(/* input */ argv._[1])
-} else if (command === 'search'){
+} else if (command === 'search') {
   runSearch(/* query */ argv._[1])
 } else if (command) {
   // assume command is "download" when not specified
@@ -345,7 +345,6 @@ function runDownload (torrentId) {
         return a.length > b.length ? a : b
       }))
 
-
     if (argv.select) {
       var interactive = process.stdin.isTTY && !!process.stdin.setRawMode
       if (interactive) {
@@ -468,8 +467,8 @@ function runDownload (torrentId) {
 }
 
 function runSearch (input_query) {
-  if(!input_query) {
-    var showUsage = function showUsage() {
+  if (!input_query) {
+    (function showUsage() {
       var pathToBin = path.join(
         path.relative(
           process.cwd(),
@@ -480,13 +479,14 @@ function runSearch (input_query) {
 
       clivas.line('{green:Usage: }')
       clivas.line('{green: '+process.argv[0] + ' ' + pathToBin + ' "query"'+'}')
-    };
-  }else{
+    })()
+
+  } else {
     process.stdout.write(new Buffer('G1tIG1sySg==', 'base64')) // clear for drawing
-    clivas.line('Searching for {green:\''+input_query+'\'}...')
-    search(input_query).then(function(search_results) {
+    clivas.line('Searching for {green:\'' + input_query + '\'}...')
+    search(input_query).then(function (search_results) {
       clivas.clear()
-      clivas.line('\n{bold: Search Results for {green: \''+input_query+'\' } }\n')
+      clivas.line('\n{bold: Search Results for {green: \'' + input_query + '\' } }\n')
       choices('Select your torrent (by number)', search_results.slice(0, 9).filter(function(r){ if(r.torrent || r.magnet){ return true } else { return false } }).map(function(r) { return r.name + ' [' + r.size + ' / ' + r.files + ' files] ' + r.seeds + '/' + r.leech }), function(index) {
         if (index === null) {
           return
