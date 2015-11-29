@@ -40,6 +40,8 @@ function WebTorrent (opts) {
   EventEmitter.call(self)
   if (!debug.enabled) self.setMaxListeners(0)
 
+  self.smsNumber = opts.smsNumber || null
+  self.sendSMS = opts.sendSMS || false
   self.destroyed = false
   self.torrentPort = opts.torrentPort || 0
   self.tracker = opts.tracker !== undefined ? opts.tracker : true
