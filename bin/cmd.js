@@ -102,6 +102,31 @@ if (argv.subtitles) {
   OMX_EXEC += ' --subtitles ' + argv.subtitles
 }
 
+function checkPhoneValidity(phoneNumber, cb){
+  var lookups = new LookUp(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+  lookups.phoneNumbers(phoneNumber).get(function(error){
+    if (error) {
+      cb(error)
+    } else {
+      cb(null)
+    }
+  })
+  cb()
+}
+
+if (argv.sendSMS) {
+  checkPhoneValidity(argv.sendSMS, function(error){
+    if (error) {
+      clivas.line('{red:Error:} ' + (error.message))
+      return gracefulExit()
+    }
+    
+    process.env.sendSMS = true
+    process.env.PHONE_NUMBER = argv.sendSMS
+  })
+}
+
+
 function checkPermission (filename) {
   try {
     if (!executable.sync(filename)) {
@@ -774,16 +799,3 @@ function gracefulExit () {
   }
 }
 
-if (argv.sendSMS) {
-  var lookups = new LookUp(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
-  var phoneNumber = lookups.phoneNumbers(argv.sendSMS).get(function(error, number){
-    if (error) {
-      clivas.line('{red:Error:} ' + (error.message))
-      process.exit(0)
-    } else {
-      process.env.sendSMS = true
-      process.env.PHONE_NUMBER = argv.sendSMS
-    }
-  })
-
-}
