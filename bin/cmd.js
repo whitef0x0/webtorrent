@@ -102,18 +102,10 @@ if (argv.subtitles) {
   OMX_EXEC += ' --subtitles ' + argv.subtitles
 }
 
-function checkPhoneValidity(phoneNumber, cb){
-  var lookups = new LookUp(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
-  lookups.phoneNumbers(phoneNumber).get(function(error){
-    if (error) {
-      cb(error)
-    } else {
-      cb(null)
-    }
-  })
-  cb()
-}
 
+
+var PHONE_NUM = null
+var sendSMS = false
 if (argv.sendSMS) {
   checkPhoneValidity(argv.sendSMS, function(error){
     if (error) {
@@ -121,8 +113,8 @@ if (argv.sendSMS) {
       return gracefulExit()
     }
     
-    process.env.sendSMS = true
-    process.env.PHONE_NUMBER = argv.sendSMS
+    sendSMS = process.env.sendSMS = true
+    PHONE_NUM = argv.sendSMS
   })
 }
 
@@ -277,7 +269,7 @@ function runCreate (input) {
       fs.writeFileSync(argv.out, torrent)
     } else {
       process.stdout.write(torrent)
-    }
+    }proc
   })
 }
 
@@ -287,10 +279,18 @@ function runDownload (torrentId) {
   if (!argv.out && !argv.stdout && !playerName) {
     argv.out = process.cwd()
   }
+  
+  
+  var webtorrent_opts = {
+    blocklist: argv.blocklist,
+  }
+  
+  if(sendSMS) {
+    opts.smsNumber = PHONE_NUM
+    opts.sendSMS = true
+  }
 
-  client = new WebTorrent({
-    blocklist: argv.blocklist
-  })
+  client = new WebTorrent(webtorrent_opts)
   .on('error', fatalError)
 
   var torrent = client.add(torrentId, { path: argv.out })
@@ -537,9 +537,16 @@ function runSeed (input) {
     return
   }
 
-  client = new WebTorrent({
-    blocklist: argv.blocklist
-  })
+  var webtorrent_opts = {
+    blocklist: argv.blocklist,
+  }
+  
+  if(sendSMS) {
+    opts.smsNumber = PHONE_NUM
+    opts.sendSMS = true
+  }
+
+  client = new WebTorrent(webtorrent_opts)
   .on('error', fatalError)
 
   client.seed(input)
