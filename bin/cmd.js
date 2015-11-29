@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-process.env.TWILIO_ACCOUNT_SID = 'AC408a347974a499a0df184df3501cbfc6'
-process.env.TWILIO_AUTH_TOKEN = '0930692ce48a7d150e72354fb64c9097'
 var LookUp = require('twilio').LookupsClient
 var search = require('search-kat.ph')
 var choices = require('choices')
