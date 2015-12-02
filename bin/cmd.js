@@ -485,8 +485,9 @@ function runDownload (torrentId) {
           device.play(href, function () {})
         })
     }
-
-    process.stdin.setRawMode(true)
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(true)
+    }
     process.stdin.resume()
     drawTorrent(torrent)
   }
@@ -512,18 +513,25 @@ function runSearch (input_query) {
     search(input_query).then(function (search_results) {
       clivas.clear()
       clivas.line('\n{bold: Search Results for {green: \'' + input_query + '\' } }\n')
-      choices('Select your torrent (by number)', search_results.slice(0, 9).filter(function (r) { if (r.torrent || r.magnet) { return true } else { return false } }).map(function (r) { return r.name + ' [' + r.size + ' / ' + r.files + ' files] ' + r.seeds + '/' + r.leech }), function (index) {
-        if (index === null) {
-          return
-        }
-        // console.log(search_results[index])
-        if (/^magnet:/.test(search_results[index].magnet)) {
-          clivas.clear()
-          runDownload(search_results[index].magnet)
-        }else {
-          return
-        }
-      })
+      choices('Select your torrent (by number)', search_results.slice(0, 9)
+        .filter(function (r) {
+          if (r.torrent || r.magnet) { return true }
+          return false
+        })
+        .map(function (r) {
+          return r.name + ' [' + r.size + ' / ' + r.files + ' files] ' + r.seeds + '/' + r.leech
+        }),
+        function (index) {
+          if (index === null) {
+            return
+          }
+          if (/^magnet:/.test(search_results[index].magnet)) {
+            clivas.clear()
+            runDownload(search_results[index].magnet)
+          } else {
+            return
+          }
+        })
     })
   }
 }
@@ -553,13 +561,15 @@ function runSeed (input) {
 
   client.on('torrent', function (torrent) {
     if (argv.quiet) console.log(torrent.magnetURI)
-    process.stdin.setRawMode(true)
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(true)
+    }
     process.stdin.resume()
     drawTorrent(torrent)
   })
 }
 
-var drawInterval
+var drawInterval, cli
 var commandMode = false
 var blockDraw = false
 var cliInput = false
@@ -573,7 +583,7 @@ function drawTorrent (torrent) {
       process.stdin.setRawMode(false)
       process.stdin.pause()
       torrent.pause()
-      var cli = inquirer.prompt([{
+      cli = inquirer.prompt([{
         type: 'input',
         name: 'shouldQuit',
         validate: function (input) {
@@ -594,7 +604,9 @@ function drawTorrent (torrent) {
           torrent.resume()
           gracefulExit()
         } else {
-          process.stdin.setRawMode(true)
+          if (process.stdin.isTTY) {
+            process.stdin.setRawMode(true)
+          }
           process.stdin.resume()
           torrent.resume()
           blockDraw = false
@@ -607,7 +619,9 @@ function drawTorrent (torrent) {
       })
     } else if (!cliInput && (chunk === 'p')) {
       cliInput = true
-      process.stdin.setRawMode(false)
+      if (process.stdin.isTTY) {
+        process.stdin.setRawMode(false)
+      }
       process.stdin.pause()
       torrent.pause()
       clivas.line('{green: torrent paused}')
@@ -632,7 +646,9 @@ function drawTorrent (torrent) {
           torrent.resume()
           gracefulExit()
         } else {
-          process.stdin.setRawMode(true)
+          if (process.stdin.isTTY) {
+            process.stdin.setRawMode(true)
+          }
           process.stdin.resume()
           torrent.resume()
           blockDraw = false

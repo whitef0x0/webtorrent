@@ -118,6 +118,7 @@ Object.defineProperty(WebTorrent.prototype, 'ratio', {
  */
 WebTorrent.prototype.addBySearch = function (query) {
   var self = this
+<<<<<<< HEAD
   if(!query || typeof query !== 'string') return self.emit('error', new Error('query is invalid'))
   if (self.destroyed) return self.emit('error', new Error('client is destroyed'))
 
@@ -131,6 +132,21 @@ WebTorrent.prototype.addBySearch = function (query) {
       } 
     )[0]
     if(!queryTorrent) return self.emit('error', new Error('could not find any valid torrents'))
+=======
+  if (!query || typeof query !== 'string') return self.emit('error', new Error('query is invalid'))
+  if (self.destroyed) return self.emit('error', new Error('client is destroyed'))
+
+  searchForTorrents(query).then(function (search_results) {
+    if (!search_results) return self.emit('error', new Error('could not find any matching torrents'))
+
+    var queryTorrent = search_results.filter(
+      function (r) {
+        if (r.torrent || r.magnet) return true
+        return false
+      }
+    )[0]
+    if (!queryTorrent) return self.emit('error', new Error('could not find any valid torrents'))
+>>>>>>> working
 
     self.emit('search')
     return self.download(queryTorrent.magnet)
@@ -171,8 +187,13 @@ WebTorrent.prototype.get = function (torrentId) {
 WebTorrent.prototype.add =
 WebTorrent.prototype.download = function (torrentId, opts, ontorrent) {
   var self = this
+<<<<<<< HEAD
   if (self.destroyed) return self.emit('error', new Error('client is destroyed'))
   if (typeof opts === 'function') return self.add(torrentId, opts, null)
+=======
+  if (self.destroyed) return self.emit('error', new Error('download client is destroyed'))
+  if (typeof opts === 'function') return self.add(torrentId, null, opts)
+>>>>>>> working
   debug('add')
   if (!opts) opts = {}
   else opts = extend({}, opts)
@@ -223,24 +244,26 @@ WebTorrent.prototype.download = function (torrentId, opts, ontorrent) {
   return torrent
 }
 
-WebTorrent.prototype.pause = function(currentTorrent){
+WebTorrent.prototype.pause = function (currentTorrent) {
   var self = this
   if (self.destroyed) return self.emit('error', new Error('client is destroyed'))
 
   if (currentTorrent === null) return self.emit('error', new Error('torrent does not exist'))
 
-  currentTorrent.pause();
+  currentTorrent.pause()
 }
 
-WebTorrent.prototype.resume = function(currentTorrent){
+WebTorrent.prototype.resume = function (currentTorrent) {
   var self = this
   if (self.destroyed) return self.emit('error', new Error('client is destroyed'))
+<<<<<<< HEAD
   	
+=======
+>>>>>>> working
   if (currentTorrent === null) return self.emit('error', new Error('torrent does not exist'))
 
-  currentTorrent.resume();
+  currentTorrent.resume()
 }
-
 
 /**
  * Start seeding a new file/folder.
@@ -250,7 +273,11 @@ WebTorrent.prototype.resume = function(currentTorrent){
  */
 WebTorrent.prototype.seed = function (input, opts, onseed) {
   var self = this
+<<<<<<< HEAD
   if (self.destroyed) return self.emit('error', new Error('client is destroyed'))
+=======
+  if (self.destroyed) return self.emit('error', new Error('seed client is destroyed'))
+>>>>>>> working
   if (typeof opts === 'function') return self.seed(input, null, opts)
   debug('seed')
   if (!opts) opts = {}

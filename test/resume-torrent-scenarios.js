@@ -7,7 +7,6 @@ var TrackerServer = require('bittorrent-tracker/server')
 var WebTorrent = require('../')
 
 var leavesPath = path.resolve(__dirname, 'content', 'Leaves of Grass by Walt Whitman.epub')
-var leavesFile = fs.readFileSync(leavesPath)
 var leavesTorrent = fs.readFileSync(path.resolve(__dirname, 'torrents', 'leaves.torrent'))
 var leavesParsed = parseTorrent(leavesTorrent)
 
@@ -42,40 +41,40 @@ function remoteResumeTest (t) {
   t.plan(6)
 
   auto({
-
-    client1: [function (cb) {
+    client1: [ function (cb) {
       var client1 = new WebTorrent({ dht: false })
       client1.on('error', function (err) { t.fail(err) })
       client1.on('warning', function (err) { t.fail(err) })
 
-      var count = 0, amountDownloadAtPause, isResumed = false
+      var count = 0
+      var amountDownloadAtPause
+      var isResumed = false
 
       client1.add(bunnyParsed)
 
       client1.on('resume', function () {
-        isResumed = true;
+        isResumed = true
       })
 
-	    client1.once('torrent', function (torrent) {
+      client1.once('torrent', function (torrent) {
         t.pass('torrent correctly initialized')
-		    client1.on('download', function (downloaded) {
-	     		if (!isResumed) { 
-			      if (count === 2) {
-	           	torrent.pause(function(){
+        client1.on('download', function (downloaded) {
+          if (!isResumed) {
+            if (count === 2) {
+              torrent.pause(function () {
                 t.ok(torrent.paused, 'Torrent is paused')
-	           	  amountDownloadAtPause = torrent.downloaded
-	              torrent.resume() 
+                amountDownloadAtPause = torrent.downloaded
+                torrent.resume()
                 t.ok(torrent.resumed, 'Torrent is resumed')
               })
-		        } else {
-              count++              
+            } else {
+              count++
             }
-		      } else {
-	      		t.equal(amountDownloadAtPause, torrent.downloaded-downloaded, 'resume() saved previously downloaded data')
-	      		cb(null, client1)
-		      }
-	    	})
-
+          } else {
+            t.equal(amountDownloadAtPause, torrent.downloaded - downloaded, 'resume() saved previously downloaded data')
+            cb(null, client1)
+          }
+        })
       })
     }]
   }, function (err, r) {
@@ -108,7 +107,7 @@ function scenario1_1Test (t, serverType) {
         var announceUrl = serverType === 'http'
           ? 'http://127.0.0.1:' + port + '/announce'
           : 'udp://127.0.0.1:' + port
-         console.log('server listening on '+announceUrl)
+        console.log('server listening on ' + announceUrl)
 
         // Overwrite announce with our local tracker
         leavesParsed.announce = [ announceUrl ]
@@ -148,18 +147,16 @@ function scenario1_1Test (t, serverType) {
       var currentTorrent = client2.add(leavesParsed)
 
       client2.once('torrent', function (torrent) {
-
-        //Pause the torrent
+        // Pause the torrent
         client2.pause(currentTorrent)
         t.ok(currentTorrent.paused, 'Torrent should be paused')
 
-        currentTorrent.once('done', function (){
+        currentTorrent.once('done', function () {
           t.fail('Torrent should not be finished')
         })
 
         cb(null, client2)
       })
-
     }]
   }, function (err, r) {
     t.error(err)
@@ -200,7 +197,7 @@ function scenario1_2Test (t, serverType) {
         var announceUrl = serverType === 'http'
           ? 'http://127.0.0.1:' + port + '/announce'
           : 'udp://127.0.0.1:' + port
-         console.log('server listening on '+announceUrl)
+        console.log('server listening on ' + announceUrl)
 
         // Overwrite announce with our local tracker
         leavesParsed.announce = [ announceUrl ]
@@ -240,22 +237,20 @@ function scenario1_2Test (t, serverType) {
       var currentTorrent = client2.add(leavesParsed)
 
       client2.once('torrent', function (torrent) {
-
-        //Pause the torrent
+        // Pause the torrent
         client2.pause(currentTorrent)
         t.ok(currentTorrent.paused, 'Torrent should be paused')
 
-        //Check that we can resume
+        // Check that we can resume
         torrent.resume(currentTorrent)
         t.ok(currentTorrent.resumed, 'Torrent should be resumed')
         t.notOk(currentTorrent.paused, 'Torrent should be not be paused')
 
-        currentTorrent.once('done', function (){
+        currentTorrent.once('done', function () {
           t.pass('Torrent should be finished')
           cb(null, client2)
         })
       })
-
     }]
   }, function (err, r) {
     t.error(err)
@@ -296,7 +291,7 @@ function scenario1_3Test (t, serverType) {
         var announceUrl = serverType === 'http'
           ? 'http://127.0.0.1:' + port + '/announce'
           : 'udp://127.0.0.1:' + port
-         console.log('server listening on '+announceUrl)
+        console.log('server listening on ' + announceUrl)
 
         // Overwrite announce with our local tracker
         leavesParsed.announce = [ announceUrl ]
@@ -336,16 +331,14 @@ function scenario1_3Test (t, serverType) {
       var currentTorrent = client2.add(leavesParsed)
 
       client2.once('torrent', function (torrent) {
-
         torrent.resume(currentTorrent)
         t.notOk(currentTorrent.resumed, 'Torrent should not be resumed')
 
-        currentTorrent.once('done', function (){
+        currentTorrent.once('done', function () {
           t.pass('Torrent should be finished')
           cb(null, client2)
         })
       })
-
     }]
   }, function (err, r) {
     t.error(err)
@@ -386,7 +379,7 @@ function scenario1_4Test (t, serverType) {
         var announceUrl = serverType === 'http'
           ? 'http://127.0.0.1:' + port + '/announce'
           : 'udp://127.0.0.1:' + port
-         console.log('server listening on '+announceUrl)
+        console.log('server listening on ' + announceUrl)
 
         // Overwrite announce with our local tracker
         leavesParsed.announce = [ announceUrl ]
@@ -435,12 +428,11 @@ function scenario1_4Test (t, serverType) {
         currentTorrent.once('paused', function () {
           t.fail('Torrent should not be paused')
         })
-        currentTorrent.once('done', function (){
+        currentTorrent.once('done', function () {
           t.fail('Torrent should not be able to finish')
         })
         cb(null, client2)
       })
-
     }]
   }, function (err, r) {
     t.error(err)
@@ -481,7 +473,7 @@ function scenario1_5Test (t, serverType) {
         var announceUrl = serverType === 'http'
           ? 'http://127.0.0.1:' + port + '/announce'
           : 'udp://127.0.0.1:' + port
-         console.log('server listening on '+announceUrl)
+        console.log('server listening on ' + announceUrl)
 
         // Overwrite announce with our local tracker
         leavesParsed.announce = [ announceUrl ]
@@ -521,7 +513,6 @@ function scenario1_5Test (t, serverType) {
       var currentTorrent = client2.add(leavesParsed)
 
       client2.once('torrent', function (torrent) {
-
         currentTorrent.once('done', function () {
           t.pass('Torrent should be finished')
 
@@ -534,7 +525,6 @@ function scenario1_5Test (t, serverType) {
           cb(null, client2)
         })
       })
-
     }]
   }, function (err, r) {
     t.error(err)

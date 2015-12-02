@@ -12,7 +12,7 @@ PM = A x Size^b x EM
 
 PM = 1.2*(0.10)^0.95*5 = .63months
 
-###Size
+###Size 
 
 `Size = 0.05 KLoC`
 ___Justification___: Our lines of code have been justified by the relative size of other modules of similar complexity that have already been written for this project.
@@ -36,13 +36,13 @@ ___Justification___: We think our team will put a lot of effort due to the inter
 
 ####Scenario S1.1: After I have created a new Torrent, and it has started downloading,
 When I call the pause() function
-Then my torrent will pause
+Then my torrent will pause 
 And then my torrent will stop downloading
 
-####Scenario S1.2: After I have created a new Torrent,
+####Scenario S1.2: After I have created a new Torrent, 
 And I have paused my torrent
 When I call the resume() function
-Then my torrent will resume downloading
+Then my torrent will resume downloading 
 And my torrent will pick up progress from last pause
 
 ####Scenario S1.3: After I have created a new Torrent,
@@ -50,13 +50,13 @@ And it has started downloading,
 When I call the resume() function,
 Then my RESUME will not execute
 
-####Scenario S1.4: After I have created a new Torrent,
+####Scenario S1.4: After I have created a new Torrent, 
 And it has been paused
 When I call the pause() function,
 Then my PAUSE will not execute,
 And my Torrent will still be paused
 
-####Scenario S1.5: After I have created a new Torrent,
+####Scenario S1.5: After I have created a new Torrent, 
 And I have started downloading it ,
 And my torrent has finished downloading
 When I call the pause() function,
@@ -125,3 +125,4 @@ And I have sucessfully sent a SMS STARTED NOTIFICATION
 When I respond with 'r' to SMS STARTED NOTIFICATION number
 Then my torrent will be resumed
 And SMS RESUME NOTIFICATION will be sent to my number
+
