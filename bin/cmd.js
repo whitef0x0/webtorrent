@@ -1,5 +1,8 @@
 #!/usr/bin/env node
-var LookUp = require('twilio').LookupsClient
+process.env.TWILIO_ACCOUNT_SID = 'AC408a347974a499a0df184df3501cbfc6'
+process.env.TWILIO_AUTH_TOKEN = '0930692ce48a7d150e72354fb64c9097'
+var LookupsClient = require('twilio').LookupsClient
+var smsClient = new LookupsClient(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
 var search = require('search-kat.ph')
 var choices = require('choices')
 var clivas = require('clivas')
@@ -107,14 +110,14 @@ if (argv.subtitles) {
 var PHONE_NUM = null
 var sendSMS = false
 if (argv.sendSMS) {
-  checkPhoneValidity(argv.sendSMS, function(error){
+  smsClient.phoneNumbers(''+argv.sendSMS, function(error){
     if (error) {
       clivas.line('{red:Error:} ' + (error.message))
       return gracefulExit()
     }
     
     sendSMS = process.env.sendSMS = true
-    PHONE_NUM = argv.sendSMS
+    process.env.phoneNumber = PHONE_NUM = argv.sendSMS
   })
 }
 
@@ -285,9 +288,9 @@ function runDownload (torrentId) {
     blocklist: argv.blocklist,
   }
   
-  if(sendSMS) {
-    opts.smsNumber = PHONE_NUM
-    opts.sendSMS = true
+  if(argv.sendSMS) {
+    webtorrent_opts.smsNumber = argv.sendSMS
+    webtorrent_opts.sendSMS = true
   }
 
   client = new WebTorrent(webtorrent_opts)
@@ -549,9 +552,9 @@ function runSeed (input) {
     blocklist: argv.blocklist,
   }
   
-  if(sendSMS) {
-    opts.smsNumber = PHONE_NUM
-    opts.sendSMS = true
+  if(argv.sendSMS) {
+    webtorrent_opts.smsNumber = PHONE_NUM
+    webtorrent_opts.sendSMS = true
   }
 
   client = new WebTorrent(webtorrent_opts)

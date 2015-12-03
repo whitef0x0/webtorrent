@@ -60,6 +60,7 @@
     "thunky": "^0.1.0",
     "torrent-discovery": "^3.0.0",
     "torrent-piece": "^1.0.0",
+    "twilio": "^2.5.2",
     "uniq": "^1.0.1",
     "ut_metadata": "^2.1.0",
     "ut_pex": "^1.0.1",

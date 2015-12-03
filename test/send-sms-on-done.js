@@ -11,10 +11,10 @@ var leavesFile = fs.readFileSync(leavesPath)
 var leavesTorrent = fs.readFileSync(path.resolve(__dirname, 'torrents', 'leaves.torrent'))
 var leavesParsed = parseTorrent(leavesTorrent)
 
-test('S3.1 Should not send sms for invalid phone number', function (t) {
-  scenario3_1Test(t)
-})
+// test('S3.1 Should not send sms for invalid phone number', function (t) {
+//   scenario3_1Test(t)
+// })
 
-test('S3.2 Should send sms for valid phone number', function (t) {
-  scenario3_2Test(t)
-})
+// test('S3.2 Should send sms for valid phone number', function (t) {
+//   scenario3_2Test(t)
+// })
