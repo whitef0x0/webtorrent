@@ -27,7 +27,7 @@ function scenario2_1Test (t) {
       remote_client.on('search', function () {
         t.pass('valid torrent search completed')
       })
-      remote_client.once('torrent', function (torrent) {
+      remote_client.on('torrent', function (torrent) {
         t.pass('torrent sucessfully initialized')
         cb(null, remote_client)
       })
