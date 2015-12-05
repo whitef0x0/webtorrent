@@ -27,11 +27,14 @@ function scenario2_1Test (t) {
       remote_client.on('warning', function (err) { t.fail(err) })
       remote_client.on('search', function () {
         t.pass('valid torrent search completed')
+        cb(null, remote_client)
       })
+      /*
       remote_client.on('torrent', function (torrent) {
         t.pass('torrent sucessfully initialized')
         cb(null, remote_client)
       })
+			*/
       remote_client.addBySearch('debian')
     }]
   }, function (err, r) {
