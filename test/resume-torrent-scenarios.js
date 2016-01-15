@@ -7,10 +7,10 @@ var TrackerServer = require('bittorrent-tracker/server')
 var WebTorrent = require('../')
 
 var leavesPath = path.resolve(__dirname, 'content', 'Leaves of Grass by Walt Whitman.epub')
-var leavesTorrent = fs.readFileSync(path.resolve(__dirname, 'torrents', 'leaves.torrent'))
+var leavesTorrent = fs.readFileSync(path.resolve(__dirname, 'fixtures', 'leaves.torrent'))
 var leavesParsed = parseTorrent(leavesTorrent)
 
-var bunnyTorrent = fs.readFileSync(path.resolve(__dirname, 'torrents', 'sintel-5gb.torrent'))
+var bunnyTorrent = fs.readFileSync(path.resolve(__dirname, 'fixtures', 'bunny-private.torrent'))
 var bunnyParsed = parseTorrent(bunnyTorrent)
 
 test('Pause, Resume and Download using a REMOTE HTTP tracker (via .torrent file)', function (t) {

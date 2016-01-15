@@ -5,7 +5,7 @@ var test = require('tape')
 var WebTorrent = require('../')
 var sinon = require('sinon')
 
-var leavesPath = path.resolve(__dirname, 'torrents', 'leaves.torrent')
+var leavesPath = path.resolve(__dirname, 'fixtures', 'leaves.torrent')
 var leaves = fs.readFileSync(leavesPath)
 var leavesTorrent = parseTorrent(leaves)
 var leavesParsed = parseTorrent(leavesTorrent)
