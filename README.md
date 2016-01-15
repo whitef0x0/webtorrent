@@ -296,12 +296,21 @@ Start seeding a new torrent.
 
 Or, an **array of `string`, `File`, or `Buffer` objects**.
 
-If `opts` is specified, it should contain the following types of options:
+#### `client.pause(input, [function onpause (torrent) {}])`
 
-- options for [create-torrent](https://github.com/feross/create-torrent#createtorrentinput-opts-function-callback-err-torrent-) (to allow configuration of the .torrent file that is created)
-- options for `client.add` (see above)
+Pause a torrent's current uploading and downloading
 
-If `onseed` is specified, it will be called when the client has begun seeding the file.
+`input` must be a:
+- Torrent object (from /lib/torrent.js) that is part of the client
+
+If `onpause` is specified, it will be called after the client is paused
+
+#### `client.resume(input)`
+
+Resume a torrent's uploading and downloading
+
+`input` must be a:
+- Torrent object (from /lib/torrent.js) that is part of the client
 
 #### `client.on('torrent', function (torrent) {})`
 
@@ -331,6 +340,24 @@ through the `client.torrents` array. Returns `null` if no matching torrent found
 Seed ratio for all torrents in the client.
 
 ### torrent api
+
+#### `torrent.disableSeeding(input)`
+
+Disable seeding and disconnect all current leeching peers
+
+#### `torrent.disableSeeding(input)`
+
+Enable seeding and start broadcasting seed status to leeching peers
+
+#### `torrent.pause([function onpause (torrent) {}])`
+
+Pause a torrent's current uploading and downloading
+
+If `onpause` is specified, it will be called after the client is paused
+
+#### `torrent.resume()`
+
+Resume a torrent's uploading and downloading
 
 #### `torrent.infoHash`
 

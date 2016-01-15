@@ -189,6 +189,18 @@ WebTorrent.prototype.download = function (torrentId, opts, ontorrent) {
       self.emit('listening', port, torrent)
     })
 
+    torrent.on('paused', function (port) {
+      self.emit('paused', port, torrent)
+    })
+
+    torrent.on('resume', function (port) {
+      self.emit('resume', torrent)
+    })
+
+    torrent.on('infoHash', function () {
+      self.emit('infoHash', torrent)
+    })
+
     torrent.on('ready', function () {
       _ontorrent()
       self.emit('torrent', torrent)
@@ -196,6 +208,27 @@ WebTorrent.prototype.download = function (torrentId, opts, ontorrent) {
   }
 
   return torrent
+}
+
+WebTorrent.prototype.pause = function (currentTorrent, cb) {
+  var self = this
+
+  if (!(currentTorrent instanceof Torrent)) return self.emit('error', new Error('input for pause() must be a valid torrent'))
+  if (self.destroyed) return self.emit('error', new Error('client is destroyed'))
+
+  if (currentTorrent === null) return self.emit('error', new Error('torrent does not exist'))
+
+  currentTorrent.pause(cb)
+}
+
+WebTorrent.prototype.resume = function (currentTorrent) {
+  var self = this
+
+  if (!(currentTorrent instanceof Torrent)) return self.emit('error', new Error('input for resume() must be a valid torrent'))
+  if (self.destroyed) return self.emit('error', new Error('client is destroyed'))
+  if (currentTorrent === null) return self.emit('error', new Error('torrent does not exist'))
+
+  currentTorrent.resume()
 }
 
 /**
